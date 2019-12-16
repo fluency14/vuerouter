@@ -90,5 +90,46 @@ vueRouter.install=function(vue){
       return h(routerMap[current]);
     }
   })
+  // 定义组件<router-link></router-link>
+  vue.component('router-link',{
+    props: {
+      to: String,
+      tag:String
+    },
+    render(h) {
+      let mode = this._self.$router.mode;
+      let tag = this.tag || 'a';
+      let routerHistory = this._self.$router.history;
+      return h(tag, {
+        attrs: tag === 'a' ? {href: mode === 'hash' ? '#' + this.to : this.to,} : {},
+        on: {
+          click: (e) => {
+            if (this.to === routerHistory.current) {
+              e.preventDefault();
+              return;
+            }
+            console.log(this)
+            routerHistory.current = this.to;
+            switch (mode) {
+              case 'hash':
+                if (tag === 'a') return;
+                location.hash = this.to;
+              break;
+              case 'history':
+                history.pushState({
+                  path: this.to
+                }, null, this.to);
+              break;
+              default:
+            }
+            e.preventDefault();
+          }
+        },
+        style: {
+          cursor: 'pointer'
+        }
+      }, this.$slots.default)
+    }
+  })
 }
 export default vueRouter
