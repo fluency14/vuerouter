@@ -1,4 +1,3 @@
-import Vue from 'vue'
 class HistoryRouter{
   constructor(){
     // 要监听的路由
@@ -52,7 +51,7 @@ vueRouter.install=function(vue){
   // 注意判断插件是否已经注册,防止重复注册
   if(vueRouter.install.installed)return
   vueRouter.install.installed = true;
-  Vue.mixin({
+  vue.mixin({
     beforeCreate(){
       // main.js 中的配置选项
       if(this.$options && this.$options.router){
@@ -60,7 +59,7 @@ vueRouter.install=function(vue){
         this._root = this;
         this._router = this.$options.router;
         // 监听 this 当前的 历史的
-        Vue.util.defineReactive(this,'current',this._router.history)
+        vue.util.defineReactive(this,'current',this._router.history)
       }else{
         // 当前没有 root 就向上查找一级
         this._root = this.$parent._root;
@@ -81,7 +80,7 @@ vueRouter.install=function(vue){
     }
   })
   // 定义组件<router-view></router-view>
-  Vue.component('router-view',{
+  vue.component('router-view',{
     render(h){
       let current = this._self._root._router.history.current;
       // console.log(current)
